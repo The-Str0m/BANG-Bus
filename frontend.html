@@ -27,11 +27,26 @@
     const markerPositions = new Map();
     const activeAnimations = new Map();
     const stopMarkers = new Map();
+    
+    // dummy location for user, can use geolocation in the future for live location of user
+    let userLocation = {
+        lat: 61.4985,
+        lng: 23.7612,
+        accuracy: 10,
+        timestamp: Date.now()
+    };
+    let userMarker = null;
+    
+    userMarker = L.marker([userLocation.lat, userLocation.lng], {
+        title: "Your Location"
+    }).addTo(map);
+
+    userMarker.bindPopup("Your current location");
+
 
     function animateMarker(marker, targetLat, targetLng, duration = 1000) {
         const markerId = marker._leaflet_id || Date.now();
         
-
         if (activeAnimations.has(markerId)) {
             cancelAnimationFrame(activeAnimations.get(markerId));
         }
@@ -45,7 +60,6 @@
             const elapsed = Date.now() - startTime;
             const progress = Math.min(elapsed / duration, 1);
             
-
             const ease = progress < 0.5 
                 ? 2 * progress * progress 
                 : 1 - Math.pow(-2 * progress + 2, 2) / 2;
@@ -82,7 +96,6 @@
             
             const currentBusIds = new Set(buses.map(bus => bus.id));
             
-
             for (const [busId, marker] of markers.entries()) {
                 if (!currentBusIds.has(busId)) {
                     map.removeLayer(marker);
@@ -91,13 +104,11 @@
                 }
             }
             
-
             buses.forEach(bus => {
                 if (markers.has(bus.id)) {
                     const marker = markers.get(bus.id);
                     const prevPos = markerPositions.get(bus.id);
                     
-
                     if (prevPos && (prevPos.lat !== bus.lat || prevPos.lng !== bus.lng)) {
                         animateMarker(marker, bus.lat, bus.lng, 1000);
                     }
@@ -105,9 +116,14 @@
                     markerPositions.set(bus.id, { lat: bus.lat, lng: bus.lng });
                 } 
                 else {
-
-                    const marker = L.marker([bus.lat, bus.lng], {
-                        title: `Bus ${bus.id}`
+                    // Bus markers as green circles
+                    const marker = L.circleMarker([bus.lat, bus.lng], {
+                        radius: 6,
+                        fillColor: '#00FF00',
+                        color: '#FFFFFF',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
                     }).addTo(map);
                     
                     marker.bindPopup(`Bus ID: ${bus.id}`);
@@ -122,6 +138,7 @@
             console.error("error fetching buses - ", error);
         }
     }
+    
     async function loadStops() {
         try {
             const res = await fetch("http://localhost:8080/stops");
@@ -142,7 +159,7 @@
             
             stops.forEach(stop => {
                 const stopMarker = L.circleMarker([stop.lat, stop.lng], {
-                    radius: 6,
+                    radius: 4,
                     fillColor: '#FF0000',
                     color: '#FFFFFF',
                     weight: 2,
