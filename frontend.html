@@ -24,6 +24,47 @@
     }).addTo(map);
     
     const markers = new Map();
+    const markerPositions = new Map();
+    const activeAnimations = new Map();
+    
+
+    function animateMarker(marker, targetLat, targetLng, duration = 1000) {
+        const markerId = marker._leaflet_id || Date.now();
+        
+
+        if (activeAnimations.has(markerId)) {
+            cancelAnimationFrame(activeAnimations.get(markerId));
+        }
+        
+        const startPos = marker.getLatLng();
+        const startLat = startPos.lat;
+        const startLng = startPos.lng;
+        const startTime = Date.now();
+        
+        function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+
+            const ease = progress < 0.5 
+                ? 2 * progress * progress 
+                : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+            
+            const currentLat = startLat + (targetLat - startLat) * ease;
+            const currentLng = startLng + (targetLng - startLng) * ease;
+            
+            marker.setLatLng([currentLat, currentLng]);
+            
+            if (progress < 1) {
+                const frameId = requestAnimationFrame(animate);
+                activeAnimations.set(markerId, frameId);
+            } else {
+                activeAnimations.delete(markerId);
+            }
+        }
+        
+        animate();
+    }
     
     async function updateMarkers() {
         try {
@@ -41,24 +82,37 @@
             
             const currentBusIds = new Set(buses.map(bus => bus.id));
             
+
             for (const [busId, marker] of markers.entries()) {
                 if (!currentBusIds.has(busId)) {
                     map.removeLayer(marker);
                     markers.delete(busId);
+                    markerPositions.delete(busId);
                 }
             }
             
+
             buses.forEach(bus => {
                 if (markers.has(bus.id)) {
-                    markers.get(bus.id).setLatLng([bus.lat, bus.lng]);
+                    const marker = markers.get(bus.id);
+                    const prevPos = markerPositions.get(bus.id);
+                    
+
+                    if (prevPos && (prevPos.lat !== bus.lat || prevPos.lng !== bus.lng)) {
+                        animateMarker(marker, bus.lat, bus.lng, 1000);
+                    }
+                    
+                    markerPositions.set(bus.id, { lat: bus.lat, lng: bus.lng });
                 } 
                 else {
+
                     const marker = L.marker([bus.lat, bus.lng], {
                         title: `Bus ${bus.id}`
                     }).addTo(map);
                     
                     marker.bindPopup(`Bus ID: ${bus.id}`);
                     markers.set(bus.id, marker);
+                    markerPositions.set(bus.id, { lat: bus.lat, lng: bus.lng });
                 }
             });
             
@@ -69,7 +123,7 @@
         }
     }
     
-    setInterval(updateMarkers, 1000);
+    setInterval(updateMarkers, 2000);
     updateMarkers();
 </script>
 
