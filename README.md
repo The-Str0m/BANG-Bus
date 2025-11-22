@@ -1,2 +1,2 @@
-# synthax2025
+# smartraveller.io
 smartraveller.io for Synthax 2025
