@@ -7,7 +7,9 @@ Although public transport is one of the most efficient, eco-friendly ways to tra
  - language barriers
  - lack of awareness of the connectivity
 
-We want to solve this by making it easier for users to navigate around the transit system, by providing data about crowds in buses, as well as simplifying language barriers. 
+Current mapping services such as Google Maps are really inaccurate in terms of time estimates as well as types of buses that are available.
+
+We want to solve this by making it easier for users to navigate around the transit system, by providing data buses, time taken, congestion in buses, as well as simplifying language barriers. 
 
 ## Overview
 
