@@ -1,5 +1,4 @@
 # BANG! Bus
-
 ## Problem Statement
 Although public transport is one of the most efficient, eco-friendly ways to travel, to those new to the public transit system, it can feel intimidating. This can be due to a variety of reasons, including -
  - overcrowing
@@ -52,7 +51,7 @@ https://www.youtube.com/watch?v=kddTCIUBgKE
 https://shimmering-basbousa-19789e.netlify.app/
 
 ## Disclaimer
-AI was used to assist in the creation of this project. For the routing system, AI was used in Styles CSS (almost 60% ai beacuse its very time consuming to type in colour codes and manually enter the values), theme manager to create scripts to allow for seamless theme changing, app JS to create the hover effect and hightlighting. AI was used in the mapping system to assist in the creation of the CORS headers, EMA smoothing of parameters, as well as fixing issues related to API access. It was also used to assist in the creation of smooth scrolling of buses, clarify syntax errors related to the Leaflet mapping platform, and general debugging.
+AI was used to assist in the creation of this project. For the routing system, AI was used in Styles CSS (almost 60% ai beacuse its very time consuming to type in colour codes and manually enter the values), theme manager to create scripts to allow for seamless theme changing, app JS to create the hover effect and hightlighting. AI was used in the mapping system to assist in the creation of the CORS headers, EMA smoothing of parameters, as well as fixing issues related to API access. It was also used to assist in the creation of smooth scrolling of buses, clarify syntax errors related to the Leaflet mapping platform, and general debugging/formatting.
 
 The main LLMS used were ChatGPT.
 
