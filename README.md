@@ -1,4 +1,4 @@
-# smartraveller.io
+# BANG! Bus
 
 ## Problem Statement
 
@@ -14,8 +14,10 @@ We want to solve this by making it easier for users to navigate around the trans
 BANG! Bus is an integrated solution that helps users travel smarter in Bangalore using the public transit system (BMTC). Our tool includes a routing system that provides accurate estimates and travel methods using the BMTC system. It also provides common phrases in Kannada for easy communication, as well as commonly taken journeys. In addition to this, our tool includes a mapping system that shows all the buses and stations in the city. Using the buses' GPS data, we estimate the congestion in each individual bus, so the user can take a smart decision on what bus to take, instead of waiting for an empty bus that may never come.
 
 To calculate time estimates of a journey, Google Maps' API was used to estimate the time of journey. Translation was provided by Google Translate, and data about most popular routes was taken from Open Bangalore.
-THe routing was done by adding an OpenStreetMap overlay and taking values from the input fields (for the origin and destination). Nominatim Geocoding converts text into Latitude and Longitude Coordinates, from which waypoints are created using Leaflet Routing Control. The route then appears on the Leaflet map, which also ensure clean overlay on the OpenStreetMap tiles. When a route is found, Leaflet emits the RoutesFound event. Before adding a new route, the old one is removed.
-To estimate the congestion of buses, we use the GPS data of the buses to calculate speed fluctuations, stop duration, slow motion, rush hour multiplication, and jerks. These are all accounted for to provide a score from 0-100 on how congested the bus is. The baseline is set at 20.
+
+The routing was done by adding an OpenStreetMap overlay and taking values from the input fields (for the origin and destination). Nominatim Geocoding converts text into Latitude and Longitude Coordinates, from which waypoints are created using Leaflet Routing Control. The route then appears on the Leaflet map, which also ensure clean overlay on the OpenStreetMap tiles. When a route is found, Leaflet emits the RoutesFound event. Before adding a new route, the old one is removed.
+
+To estimate the congestion of buses, we use the GPS data of the buses instead of actual passenger and capacity counts. To do this, we maintain an object with the last known GPS location, speed, time since last stop, and previous occupancy estimate. We then calculate the following parameters: speed, stop duration, jerk (acceleration changes), and rush hour adjustment. These are based on the assumptions that slower buses are more crowded, longer stops contribute to more occupancy, jerks may point to potential boarding activity, and rush during peak hours is higher. By taking the weighted sums of all these factors, we estimate an occupancy score out of 100. To reduce erratic changes caused by GPS randomness/noise, we apply an EMA filter to ensure smoother transitions of occupancy over time.
 
 ## Tech Stack
 
