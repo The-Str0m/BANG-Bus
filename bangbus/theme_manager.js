@@ -6,7 +6,7 @@ export class ThemeManager {
         if (!THEMES.includes(this.currentTheme)) this.currentTheme = 'dark';
         this.applyTheme(this.currentTheme);
     }
-//A project by NTA and Pranav Soggy 
+//A project created NTA Pranav Soggy 
     applyTheme(theme) {
         const root = document.documentElement;
         root.setAttribute('data-theme', theme);
